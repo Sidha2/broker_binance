@@ -6,30 +6,30 @@ use stdClass;
 
 class ListOfObjects
 {
-    private array $errors = [];
+    private array $items = [];
 
-    public function Add(stdClass $error): void
+    public function Add(stdClass $item): void
     {
-        $errors[] = $error;
+        $this->items[] = $item;
     }
 
     public function ReadAll(): array
     {
-        return $this->errors;
+        return $this->items;
     }
 
     public function ReadByIndex(int $index): ?stdClass
     {
-        if (count($this->errors) > $index)
-            return $this->errors[$index];
+        if (count($this->items) > $index)
+            return $this->items[$index];
 
         return null;
     }
 
     public function ReadLast(): ?stdClass
     {
-        if (count($this->errors) > 0)
-            return $this->errors[count($this->errors) - 1];
+        if (count($this->items) > 0)
+            return $this->items[count($this->items) - 1];
 
         return null;
     }

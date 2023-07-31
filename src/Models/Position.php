@@ -5,4 +5,7 @@ namespace BrokerBinance\Models;
 class Position
 {
     public int $id;
+    public function __construct()
+    {
+    }
 }
