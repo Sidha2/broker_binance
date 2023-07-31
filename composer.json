@@ -1,21 +1,21 @@
 {
-    "name": "jaro/broker_binance",
-    "description": "Binance Broker",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Jaro\\BrokerBinance\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Jaroslav Bedri",
-            "email": "Jaroslav.Bedri@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "linwj/binance": "dev-master",
-        "netresearch/jsonmapper": "dev-master"
+  "name": "jaro/broker_binance",
+  "description": "Binance Broker",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "BrokerBinance\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "Jaroslav Bedri",
+      "email": "Jaroslav.Bedri@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "linwj/binance": "dev-master",
+    "netresearch/jsonmapper": "dev-master"
+  }
 }
