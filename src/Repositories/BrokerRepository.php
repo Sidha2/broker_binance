@@ -4,7 +4,7 @@ namespace BrokerBinance\Repositories;
 
 use BrokerBinance\Models\BinanceOrder;
 use BrokerBinance\Models\Error;
-use BrokerBinance\Models\ErrorList;
+use BrokerBinance\Models\ListMy;
 use BrokerBinance\Enums\ErrorType;
 use BrokerBinance\Enums\OpenCloseType;
 use BrokerBinance\Enums\OrderType;
@@ -41,7 +41,7 @@ class BrokerRepository
         }
     }
 
-    public function OpenMarketLong(string $amount, ErrorList $errorList): ?Order
+    public function OpenMarketLong(string $amount, ListMy $ListMy): ?Order
     {
         try
         {
@@ -55,11 +55,11 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketLong", $errorList);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketLong", $ListMy);
             return null;
         }
     }
-    public function OpenMarketShort(string $amount, ErrorList $errorList): ?Order
+    public function OpenMarketShort(string $amount, ListMy $ListMy): ?Order
     {
         try
         {
@@ -73,12 +73,12 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketShort", $errorList);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketShort", $ListMy);
             return null;
         }
     }
 
-    public function OpenLimitLong(string $amount, string $price, ErrorList $errorList): ?Order
+    public function OpenLimitLong(string $amount, string $price, ListMy $ListMy): ?Order
     {
         try
         {
@@ -94,12 +94,12 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitLong", $errorList);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitLong", $ListMy);
             return null;
         }
     }
 
-    public function OpenLimitShort(string $amount, string $price, ErrorList $errorList): ?Order
+    public function OpenLimitShort(string $amount, string $price, ListMy $ListMy): ?Order
     {
         try
         {
@@ -115,7 +115,7 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitShort", $errorList);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitShort", $ListMy);
             return null;
         }
 
@@ -182,7 +182,7 @@ class BrokerRepository
                 throw new \Exception("Unknown order type: " . $orderType);
         }
     }
-    private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ErrorList $errorList)
+    private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ListMy $ListMy)
     {
         try
         {
@@ -193,7 +193,7 @@ class BrokerRepository
             // Ignore
         }
 
-        $errorList->Add(new Error(
+        $ListMy->Add(new Error(
             $errorType,
             isset($error->msg) ? $error->msg : (isset($error->message) ? $error->message : $e->getMessage()),
             $comesFrom,

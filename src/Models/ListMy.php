@@ -2,14 +2,25 @@
 declare(strict_types=1);
 namespace BrokerBinance\Models;
 
+use InvalidArgumentException;
 
-class ListOfObjects
+
+class ListMy
 {
     private array $items = [];
+    private $allowedType;
+
+    public function __construct($allowedType)
+    {
+        $this->allowedType = $allowedType;
+    }
 
     public function Add(object $item): void
     {
-        $this->items[] = $item;
+        if ($item instanceof $this->allowedType)
+            $this->items[] = $item;
+        else
+            throw new InvalidArgumentException("Only objects of type {$this->allowedType} are allowed.");
     }
 
     public function ReadAll(): array
@@ -31,5 +42,10 @@ class ListOfObjects
             return $this->items[count($this->items) - 1];
 
         return null;
+    }
+
+    public function Count()
+    {
+        return count($this->items);
     }
 }

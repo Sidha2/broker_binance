@@ -3,42 +3,42 @@ declare(strict_types=1);
 namespace BrokerBinance\Services;
 use BrokerBinance\Repositories\BrokerRepository;
 use BrokerBinance\Interface\IBrokerService;
+use BrokerBinance\Models\Error;
 use BrokerBinance\Models\Order;
-use BrokerBinance\Models\ErrorList;
-use BrokerSettings;
+use BrokerBinance\Models\ListMy;
 
 class BrokerService implements IBrokerService
 {
     private BrokerRepository $brokerRepository;
-    private ErrorList $errorList;
+    private ListMy $ListMy;
     public function __construct(BrokerRepository $brokerRepository)
     {
         $this->brokerRepository = $brokerRepository;
-        $this->errorList = new ErrorList();
+        $this->ListMy = new ListMy(Error::class);
     }
 
     public function OpenMarketLong(string $amount): ?Order
     {
-      return $this->brokerRepository->OpenMarketLong($amount, $this->errorList);
+      return $this->brokerRepository->OpenMarketLong($amount, $this->ListMy);
     }
     public function OpenMarketShort(string $amount): ?Order
     {
-        return $this->brokerRepository->OpenMarketShort($amount, $this->errorList);
+        return $this->brokerRepository->OpenMarketShort($amount, $this->ListMy);
     }
     public function OpenLimitLong(string $amount, string $price): ?Order 
     {
-        return $this->brokerRepository->OpenLimitLong($amount, $price, $this->errorList);
+        return $this->brokerRepository->OpenLimitLong($amount, $price, $this->ListMy);
     }
     public function OpenLimitShort(string $amount, string $price): ?Order
     {
-        return $this->brokerRepository->OpenLimitShort($amount, $price, $this->errorList);
+        return $this->brokerRepository->OpenLimitShort($amount, $price, $this->ListMy);
     }
 
     /**
-     * Get the value of errorList
+     * Get the value of ListMy
      */ 
-    public function getErrorList()
+    public function GetErrorList()
     {
-        return $this->errorList;
+        return $this->ListMy;
     }
 }
