@@ -9,13 +9,11 @@ use BrokerSettings;
 
 class BrokerService implements IBrokerService
 {
-    private BrokerSettings $brokerSettings;
     private BrokerRepository $brokerRepository;
     private ErrorList $errorList;
-    public function __construct(BrokerRepository $brokerRepository, BrokerSettings $brokerSettings)
+    public function __construct(BrokerRepository $brokerRepository)
     {
         $this->brokerRepository = $brokerRepository;
-        $this->brokerSettings = $brokerSettings;
         $this->errorList = new ErrorList();
     }
 
@@ -23,7 +21,7 @@ class BrokerService implements IBrokerService
     {
       return $this->brokerRepository->OpenMarketLong($amount, $this->errorList);
     }
-    public function OpenMarketShort(string $amount, string $price): ?Order
+    public function OpenMarketShort(string $amount): ?Order
     {
         return $this->brokerRepository->OpenMarketShort($amount, $this->errorList);
     }
@@ -34,5 +32,13 @@ class BrokerService implements IBrokerService
     public function OpenLimitShort(string $amount, string $price): ?Order
     {
         return $this->brokerRepository->OpenLimitShort($amount, $price, $this->errorList);
+    }
+
+    /**
+     * Get the value of errorList
+     */ 
+    public function getErrorList()
+    {
+        return $this->errorList;
     }
 }

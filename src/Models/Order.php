@@ -2,6 +2,10 @@
 declare(strict_types=1);
 namespace BrokerBinance\Models;
 
+use BrokerBinance\Enums\OpenCloseType;
+use BrokerBinance\Enums\OrderType;
+use BrokerBinance\Enums\PositionSide;
+
 class Order
 {
     public int $orderId;
@@ -16,8 +20,4 @@ class Order
     public string $targetPrice;
     public string $time;
     public string $updateTime;
-
-    public function __construct()
-    {
-    }
 }

@@ -5,13 +5,13 @@ namespace BrokerBinance\Repositories;
 use BrokerBinance\Models\BinanceOrder;
 use BrokerBinance\Models\Error;
 use BrokerBinance\Models\ErrorList;
-use BrokerBinance\Models\ErrorType;
-use BrokerBinance\Models\OpenCloseType;
-use BrokerBinance\Models\OrderType;
+use BrokerBinance\Enums\ErrorType;
+use BrokerBinance\Enums\OpenCloseType;
+use BrokerBinance\Enums\OrderType;
 use BrokerBinance\Models\Order;
-use BrokerBinance\Models\PositionSide;
-use BrokerBinance\Models\TradeType;
-use BrokerSettings;
+use BrokerBinance\Enums\PositionSide;
+use BrokerBinance\Enums\TradeType;
+use BrokerBinance\Models\BrokerSettings;
 use Lin\Binance\Binance;
 use Lin\Binance\BinanceFuture;
 
@@ -46,17 +46,16 @@ class BrokerRepository
         try
         {
             $result = $this->binance->trade()->postOrder([
-                'symbol'      => $this->brokerSettings->getPair(),
-                'side'        => 'BUY',
-                'type'        => OrderType::MARKET,
-                'quantity'    => $amount,
-                'timeInForce' => 'GTC',
+                'symbol'   => $this->brokerSettings->getPair(),
+                'side'     => 'BUY',
+                'type'     => OrderType::MARKET->name,
+                'quantity' => $amount,
             ]);
             return $this->MapResultToOrder($result);
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Internal, "OpenMarketLong", $errorList);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketLong", $errorList);
             return null;
         }
     }
@@ -65,17 +64,16 @@ class BrokerRepository
         try
         {
             $result = $this->binance->trade()->postOrder([
-                'symbol'      => $this->brokerSettings->getPair(),
-                'side'        => 'SELL',
-                'type'        => OrderType::MARKET,
-                'quantity'    => $amount,
-                'timeInForce' => 'GTC',
+                'symbol'   => $this->brokerSettings->getPair(),
+                'side'     => 'SELL',
+                'type'     => OrderType::MARKET->name,
+                'quantity' => $amount,
             ]);
             return $this->MapResultToOrder($result);
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Internal, "OpenMarketShort", $errorList);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketShort", $errorList);
             return null;
         }
     }
@@ -87,7 +85,7 @@ class BrokerRepository
             $result = $this->binance->trade()->postOrder([
                 'symbol'      => $this->brokerSettings->getPair(),
                 'side'        => 'BUY',
-                'type'        => OrderType::LIMIT,
+                'type'        => OrderType::LIMIT->name,
                 'quantity'    => $amount,
                 'price'       => $price,
                 'timeInForce' => 'GTC',
@@ -96,7 +94,7 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Internal, "OpenLimitLong", $errorList);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitLong", $errorList);
             return null;
         }
     }
@@ -108,7 +106,7 @@ class BrokerRepository
             $result = $this->binance->trade()->postOrder([
                 'symbol'      => $this->brokerSettings->getPair(),
                 'side'        => 'SELL',
-                'type'        => OrderType::LIMIT,
+                'type'        => OrderType::LIMIT->name,
                 'quantity'    => $amount,
                 'price'       => $price,
                 'timeInForce' => 'GTC',
@@ -117,7 +115,7 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Internal, "OpenLimitShort", $errorList);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitShort", $errorList);
             return null;
         }
 
@@ -183,10 +181,31 @@ class BrokerRepository
             default:
                 throw new \Exception("Unknown order type: " . $orderType);
         }
-
     }
     private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ErrorList $errorList)
     {
-        $time = time();
+        try
+        {
+            $error = json_decode($e->getMessage());
+        }
+        catch (\Throwable $th)
+        {
+            // Ignore
+        }
+
+        $errorList->Add(new Error(
+            $errorType,
+            isset($error->msg) ? $error->msg : (isset($error->message) ? $error->message : $e->getMessage()),
+            $comesFrom,
+            $e->getFile(),
+            $e->getLine()));
+    }
+
+    /**
+     * Get the value of brokerSettings
+     */
+    public function getBrokerSettings()
+    {
+        return $this->brokerSettings;
     }
 }

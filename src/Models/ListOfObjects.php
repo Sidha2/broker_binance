@@ -2,13 +2,12 @@
 declare(strict_types=1);
 namespace BrokerBinance\Models;
 
-use stdClass;
 
 class ListOfObjects
 {
     private array $items = [];
 
-    public function Add(stdClass $item): void
+    public function Add(object $item): void
     {
         $this->items[] = $item;
     }
@@ -18,7 +17,7 @@ class ListOfObjects
         return $this->items;
     }
 
-    public function ReadByIndex(int $index): ?stdClass
+    public function ReadByIndex(int $index): ?object
     {
         if (count($this->items) > $index)
             return $this->items[$index];
@@ -26,7 +25,7 @@ class ListOfObjects
         return null;
     }
 
-    public function ReadLast(): ?stdClass
+    public function ReadLast(): ?object
     {
         if (count($this->items) > 0)
             return $this->items[count($this->items) - 1];

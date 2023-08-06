@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
-use BrokerBinance\Models\TradeType;
+
+namespace BrokerBinance\Models;
+
+use BrokerBinance\Enums\TradeType;
 
 class BrokerSettings
 {
@@ -10,13 +13,13 @@ class BrokerSettings
     private string $apiKey;
     private string $apiSecret;
 
-    public function __construct(string $pair, TradeType $tradeType, string $clientOrderId, string $apiKey, string $apiSecret)
+    public function __construct(string $pair, TradeType $tradeType, string $apiKey, string $apiSecret, string $clientOrderId = '1337')
     {
         $this->tradeType = $tradeType;
         $this->pair = $pair;
         $this->clientOrderId = $clientOrderId;
         $this->apiKey = $apiKey;
-        $this->apiSecret;
+        $this->apiSecret = $apiSecret;
     }
 
     /**
