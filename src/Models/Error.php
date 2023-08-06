@@ -6,6 +6,7 @@ class Error
 {
     public string $msg;
     public ErrorType $errorType;
+    public int $timestamp;
 
     public function __construct(ErrorType $errorType, string $msg)
     {

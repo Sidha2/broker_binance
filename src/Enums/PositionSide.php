@@ -3,9 +3,8 @@
 declare(strict_types=1);
 namespace BrokerBinance\Models;
 
-enum TradeType
+enum PositionSide
 {
-    case SPOT;
-    case MARGIN;
-    case FUTURES;
+    case LONG;
+    case SHORT;
 }

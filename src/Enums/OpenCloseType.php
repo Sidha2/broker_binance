@@ -3,9 +3,8 @@
 declare(strict_types=1);
 namespace BrokerBinance\Models;
 
-enum TradeType
+enum OpenCloseType
 {
-    case SPOT;
-    case MARGIN;
-    case FUTURES;
+    case OPEN;
+    case CLOSE;
 }
