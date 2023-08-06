@@ -9,5 +9,6 @@ interface IBrokerService
     public function OpenMarketShort(string $amount): ?Order;
     public function OpenLimitLong(string $amount, string $price): ?Order;
     public function OpenLimitShort(string $amount, string $price): ?Order;
+    public function GetErrorList(): array;
 
 }
