@@ -41,12 +41,12 @@ class BrokerRepository
         }
     }
 
-    public function OpenMarketLong(string $amount, ListMy $ListMy): ?Order
+    public function OpenMarketLong(string $pair, string $amount, ListMy $ListMy): ?Order
     {
         try
         {
             $result = $this->binance->trade()->postOrder([
-                'symbol'   => $this->brokerSettings->getPair(),
+                'symbol'   => $pair,
                 'side'     => 'BUY',
                 'type'     => OrderType::MARKET->name,
                 'quantity' => $amount,
@@ -59,12 +59,12 @@ class BrokerRepository
             return null;
         }
     }
-    public function OpenMarketShort(string $amount, ListMy $ListMy): ?Order
+    public function OpenMarketShort(string $pair, string $amount, ListMy $ListMy): ?Order
     {
         try
         {
             $result = $this->binance->trade()->postOrder([
-                'symbol'   => $this->brokerSettings->getPair(),
+                'symbol'   => $pair,
                 'side'     => 'SELL',
                 'type'     => OrderType::MARKET->name,
                 'quantity' => $amount,
@@ -78,12 +78,12 @@ class BrokerRepository
         }
     }
 
-    public function OpenLimitLong(string $amount, string $price, ListMy $ListMy): ?Order
+    public function OpenLimitLong(string $pair, string $amount, string $price, ListMy $ListMy): ?Order
     {
         try
         {
             $result = $this->binance->trade()->postOrder([
-                'symbol'      => $this->brokerSettings->getPair(),
+                'symbol'      => $pair,
                 'side'        => 'BUY',
                 'type'        => OrderType::LIMIT->name,
                 'quantity'    => $amount,
@@ -99,12 +99,12 @@ class BrokerRepository
         }
     }
 
-    public function OpenLimitShort(string $amount, string $price, ListMy $ListMy): ?Order
+    public function OpenLimitShort(string $pair, string $amount, string $price, ListMy $ListMy): ?Order
     {
         try
         {
             $result = $this->binance->trade()->postOrder([
-                'symbol'      => $this->brokerSettings->getPair(),
+                'symbol'      => $pair,
                 'side'        => 'SELL',
                 'type'        => OrderType::LIMIT->name,
                 'quantity'    => $amount,
@@ -182,7 +182,7 @@ class BrokerRepository
                 throw new \Exception("Unknown order type: " . $orderType);
         }
     }
-    private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ListMy $ListMy)
+    private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ListMy $ListMy): void
     {
         try
         {
@@ -204,7 +204,7 @@ class BrokerRepository
     /**
      * Get the value of brokerSettings
      */
-    public function getBrokerSettings()
+    public function getBrokerSettings(): BrokerSettings
     {
         return $this->brokerSettings;
     }

@@ -7,27 +7,17 @@ use BrokerBinance\Enums\TradeType;
 
 class BrokerSettings
 {
-    private string $pair;
     private TradeType $tradeType;
     private string $clientOrderId;
     private string $apiKey;
     private string $apiSecret;
 
-    public function __construct(string $pair, TradeType $tradeType, string $apiKey, string $apiSecret, string $clientOrderId = '1337')
+    public function __construct(TradeType $tradeType, string $apiKey, string $apiSecret, string $clientOrderId = '1337')
     {
         $this->tradeType = $tradeType;
-        $this->pair = $pair;
         $this->clientOrderId = $clientOrderId;
         $this->apiKey = $apiKey;
         $this->apiSecret = $apiSecret;
-    }
-
-    /**
-     * Get the value of pair
-     */
-    public function getPair()
-    {
-        return $this->pair;
     }
 
     /**

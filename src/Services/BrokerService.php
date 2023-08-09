@@ -17,27 +17,27 @@ class BrokerService implements IBrokerService
         $this->ListMy = new ListMy(Error::class);
     }
 
-    public function OpenMarketLong(string $amount): ?Order
+    public function OpenMarketLong(string $pair, string $amount): ?Order
     {
-      return $this->brokerRepository->OpenMarketLong($amount, $this->ListMy);
+      return $this->brokerRepository->OpenMarketLong($pair, $amount, $this->ListMy);
     }
-    public function OpenMarketShort(string $amount): ?Order
+    public function OpenMarketShort(string $pair, string $amount): ?Order
     {
-        return $this->brokerRepository->OpenMarketShort($amount, $this->ListMy);
+        return $this->brokerRepository->OpenMarketShort($pair, $amount, $this->ListMy);
     }
-    public function OpenLimitLong(string $amount, string $price): ?Order 
+    public function OpenLimitLong(string $pair, string $amount, string $price): ?Order 
     {
-        return $this->brokerRepository->OpenLimitLong($amount, $price, $this->ListMy);
+        return $this->brokerRepository->OpenLimitLong($pair, $amount, $price, $this->ListMy);
     }
-    public function OpenLimitShort(string $amount, string $price): ?Order
+    public function OpenLimitShort(string $pair, string $amount, string $price): ?Order
     {
-        return $this->brokerRepository->OpenLimitShort($amount, $price, $this->ListMy);
+        return $this->brokerRepository->OpenLimitShort($pair, $amount, $price, $this->ListMy);
     }
 
     /**
      * Get the value of ListMy
      */ 
-    public function GetErrorList()
+    public function GetErrorList(): ListMy
     {
         return $this->ListMy;
     }
