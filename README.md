@@ -2,7 +2,25 @@
 
 Broker for binance exchange
 
-'
+### Install
+
+```json
+  "require": {
+    "jaro/broker_binance": "dev-master"
+  },
+  "repositories": [
+    {
+      "url": "https://github.com/Sidha2/broker_binance.git",
+      "type": "git"
+    }
+  ]
+```
+
+```bash
+comoser update
+```
+
+### Use
 
 ```php
 <?php
