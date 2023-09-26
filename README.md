@@ -43,11 +43,11 @@ $broker = new BrokerService(
         )
     ));
 
-function OpenLimitLong(IBrokerService $broker, string $pair, string $amount, string $price){
-    return $broker->OpenLimitLong($pair, $amount, $price);
+function OpenLimitBuy(IBrokerService $broker, string $pair, string $amount, string $price){
+    return $broker->OpenLimitBuy($pair, $amount, $price);
 }
 
-OpenLimitLong($broker, 'BTCUSDT', '0.001', '20000');
+OpenLimitBuy($broker, 'BTCUSDT', '0.001', '20000');
 print_r($broker->GetErrorList()->ReadLast());
 ?>
 

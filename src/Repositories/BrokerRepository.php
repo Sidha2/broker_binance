@@ -41,7 +41,7 @@ class BrokerRepository
         }
     }
 
-    public function OpenMarketLong(string $pair, string $amount, ListMy $ListMy): ?Order
+    public function OpenMarketBuy(string $pair, string $amount, ListMy $ListMy): ?Order
     {
         try
         {
@@ -55,11 +55,11 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketLong", $ListMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketBuy", $ListMy);
             return null;
         }
     }
-    public function OpenMarketShort(string $pair, string $amount, ListMy $ListMy): ?Order
+    public function OpenMarketSell(string $pair, string $amount, ListMy $ListMy): ?Order
     {
         try
         {
@@ -73,12 +73,12 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketShort", $ListMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketSell", $ListMy);
             return null;
         }
     }
 
-    public function OpenLimitLong(string $pair, string $amount, string $price, ListMy $ListMy): ?Order
+    public function OpenLimitBuy(string $pair, string $amount, string $price, ListMy $ListMy): ?Order
     {
         try
         {
@@ -94,12 +94,12 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitLong", $ListMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitBuy", $ListMy);
             return null;
         }
     }
 
-    public function OpenLimitShort(string $pair, string $amount, string $price, ListMy $ListMy): ?Order
+    public function OpenLimitSell(string $pair, string $amount, string $price, ListMy $ListMy): ?Order
     {
         try
         {
@@ -115,7 +115,7 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitShort", $ListMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitSell", $ListMy);
             return null;
         }
 
