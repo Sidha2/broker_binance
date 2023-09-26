@@ -6,7 +6,7 @@ use BrokerBinance\Models\BinanceOrder;
 use BrokerBinance\Models\Error;
 use BrokerBinance\Models\ListMy;
 use BrokerBinance\Enums\ErrorType;
-use BrokerBinance\Enums\OpenCloseType;
+use BrokerBinance\Enums\BuySellType;
 use BrokerBinance\Enums\OrderType;
 use BrokerBinance\Models\Order;
 use BrokerBinance\Enums\PositionSide;
@@ -41,13 +41,13 @@ class BrokerRepository
         }
     }
 
-    public function OpenMarketBuy(string $pair, string $amount, ListMy $ListMy): ?Order
+    public function OpenMarket(BuySellType $buySellType, string $pair, string $amount, ListMy $listMy): ?Order
     {
         try
         {
             $result = $this->binance->trade()->postOrder([
                 'symbol'   => $pair,
-                'side'     => 'BUY',
+                'side'     => $buySellType === BuySellType::BUY ? 'BUY' : 'SELL',
                 'type'     => OrderType::MARKET->name,
                 'quantity' => $amount,
             ]);
@@ -55,36 +55,18 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketBuy", $ListMy);
-            return null;
-        }
-    }
-    public function OpenMarketSell(string $pair, string $amount, ListMy $ListMy): ?Order
-    {
-        try
-        {
-            $result = $this->binance->trade()->postOrder([
-                'symbol'   => $pair,
-                'side'     => 'SELL',
-                'type'     => OrderType::MARKET->name,
-                'quantity' => $amount,
-            ]);
-            return $this->MapResultToOrder($result);
-        }
-        catch (\Exception $e)
-        {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketSell", $ListMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketBuy", $listMy);
             return null;
         }
     }
 
-    public function OpenLimitBuy(string $pair, string $amount, string $price, ListMy $ListMy): ?Order
+    public function OpenLimit(BuySellType $buySellType, string $pair, string $amount, string $price, ListMy $listMy): ?Order
     {
         try
         {
             $result = $this->binance->trade()->postOrder([
                 'symbol'      => $pair,
-                'side'        => 'BUY',
+                'side'        => $buySellType === BuySellType::BUY ? 'BUY' : 'SELL',
                 'type'        => OrderType::LIMIT->name,
                 'quantity'    => $amount,
                 'price'       => $price,
@@ -94,31 +76,26 @@ class BrokerRepository
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitBuy", $ListMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, $buySellType === BuySellType::BUY ? "OpenLimit - Buy" : "OpenLimit - Sell", $listMy);
             return null;
         }
     }
 
-    public function OpenLimitSell(string $pair, string $amount, string $price, ListMy $ListMy): ?Order
+    public function CloseLimit(BuySellType $buySellType, string $pair, string $orderId, ListMy $listMy)
     {
         try
         {
-            $result = $this->binance->trade()->postOrder([
-                'symbol'      => $pair,
-                'side'        => 'SELL',
-                'type'        => OrderType::LIMIT->name,
-                'quantity'    => $amount,
-                'price'       => $price,
-                'timeInForce' => 'GTC',
+            $result = $this->binance->trade()->deleteOrder([
+                'symbol'  => $pair,
+                'orderId' => $orderId,
             ]);
             return $this->MapResultToOrder($result);
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenLimitSell", $ListMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, $buySellType === BuySellType::BUY ? "CloseLimit - Buy" : "CloseLimit - Sell", $listMy);
             return null;
         }
-
     }
 
     private function MapResultToOrder(BinanceOrder $result): ?Order
@@ -131,7 +108,7 @@ class BrokerRepository
         $order->avgPrice = $result->avgPrice;
         $order->cumQuote = $result->cumQuote;
         $order->executedQty = $result->executedQty;
-        $order->openCloseType = $this->MapOpenCloseType($result->side);
+        $order->openCloseType = $this->MapBuySellType($result->side);
         $order->positionSide = $this->MapPositionSide($result->positionSide);
         $order->orderType = $this->MapOrderType($result->type);
         $order->origQty = $result->origQty;
@@ -141,17 +118,17 @@ class BrokerRepository
 
     }
 
-    private function MapOpenCloseType(string $openCLoseType): OpenCloseType
+    private function MapBuySellType(string $buySellType): BuySellType
     {
-        switch ($openCLoseType)
+        switch ($buySellType)
         {
             case 'BUY':
-                return OpenCloseType::OPEN;
+                return BuySellType::BUY;
             case 'SELL':
-                return OpenCloseType::CLOSE;
+                return BuySellType::SELL;
 
             default:
-                throw new \Exception("Unknown open/close type: " . $openCLoseType);
+                throw new \Exception("Unknown open/close type: " . $buySellType);
         }
     }
 
@@ -182,7 +159,7 @@ class BrokerRepository
                 throw new \Exception("Unknown order type: " . $orderType);
         }
     }
-    private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ListMy $ListMy): void
+    private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ListMy $listMy): void
     {
         try
         {
@@ -193,7 +170,7 @@ class BrokerRepository
             // Ignore
         }
 
-        $ListMy->Add(new Error(
+        $listMy->Add(new Error(
             $errorType,
             isset($error->msg) ? $error->msg : (isset($error->message) ? $error->message : $e->getMessage()),
             $comesFrom,

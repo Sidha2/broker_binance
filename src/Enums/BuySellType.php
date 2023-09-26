@@ -3,8 +3,8 @@
 declare(strict_types=1);
 namespace BrokerBinance\Enums;
 
-enum OpenCloseType
+enum BuySellType
 {
-    case OPEN;
-    case CLOSE;
+    case BUY;
+    case SELL;
 }
