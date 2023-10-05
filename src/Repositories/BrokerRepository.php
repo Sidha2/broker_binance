@@ -41,6 +41,30 @@ class BrokerRepository
         }
     }
 
+    public function GetTicker(string $pair): ?string
+    {
+        try
+        {
+            $result = $this->binance->market()->getTickerPrice([
+                'symbol' => $pair,
+            ]);
+            if (isset($result['price']))
+                return $result['price'];
+
+            if (isset($price['msg']))
+            {
+                $this->ExceptionHandler($price, ErrorType::Exchange, "Ticker for pair '$pair' was not fetched", $istMy);
+            }
+
+            return null;
+        }
+        catch (\Exception $e)
+        {
+            $this->ExceptionHandler($e, ErrorType::Exchange, $buySellType === BuySellType::BUY ? "CloseLimit - Buy" : "CloseLimit - Sell", $listMy);
+            return null;
+        }
+    }
+
     public function OpenMarket(BuySellType $buySellType, string $pair, string $amount, ListMy $listMy): ?Order
     {
         try
@@ -161,9 +185,11 @@ class BrokerRepository
     }
     private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ListMy $listMy): void
     {
+        $errorMessage = "Can't parse error msg";
         try
         {
             $error = json_decode($e->getMessage());
+            $errorMessage = isset($error->msg) ? $error->msg : (isset($error->message) ? $error->message : $e->getMessage());
         }
         catch (\Throwable $th)
         {
@@ -172,7 +198,7 @@ class BrokerRepository
 
         $listMy->Add(new Error(
             $errorType,
-            isset($error->msg) ? $error->msg : (isset($error->message) ? $error->message : $e->getMessage()),
+            $errorMessage,
             $comesFrom,
             $e->getFile(),
             $e->getLine()));

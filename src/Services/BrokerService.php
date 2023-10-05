@@ -19,6 +19,10 @@ class BrokerService implements IBrokerService
         $this->listMy = new ListMy(Error::class);
     }
 
+    public function GetTicker(string $pair): ?string
+    {
+        return $this->brokerRepository->GetTicker($pair);
+    }
     public function OpenMarketBuy(string $pair, string $amount): ?Order
     {
         return $this->brokerRepository->OpenMarket(BuySellType::BUY, $pair, $amount, $this->listMy);
