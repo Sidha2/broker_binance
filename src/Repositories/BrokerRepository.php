@@ -41,7 +41,7 @@ class BrokerRepository
         }
     }
 
-    public function GetTicker(string $pair): ?string
+    public function GetTicker(string $pair, ListMy $listMy): ?string
     {
         try
         {
@@ -51,16 +51,16 @@ class BrokerRepository
             if (isset($result['price']))
                 return $result['price'];
 
-            if (isset($price['msg']))
+            if (isset($result['msg']))
             {
-                $this->ExceptionHandler($price, ErrorType::Exchange, "Ticker for pair '$pair' was not fetched", $istMy);
+                $this->ExceptionHandler($result, ErrorType::Exchange, "Ticker for pair '$pair' was not fetched", $listMy);
             }
 
             return null;
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, $buySellType === BuySellType::BUY ? "CloseLimit - Buy" : "CloseLimit - Sell", $listMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "Ticker for pair '$pair' was not fetched", $listMy);
             return null;
         }
     }
@@ -183,7 +183,7 @@ class BrokerRepository
                 throw new \Exception("Unknown order type: " . $orderType);
         }
     }
-    private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ListMy $listMy): void
+    private function ExceptionHandler(\Throwable|object $e, ErrorType $errorType, string $comesFrom, ListMy $listMy): void
     {
         $errorMessage = "Can't parse error msg";
         try

@@ -21,7 +21,7 @@ class BrokerService implements IBrokerService
 
     public function GetTicker(string $pair): ?string
     {
-        return $this->brokerRepository->GetTicker($pair);
+        return $this->brokerRepository->GetTicker($pair, $this->listMy);
     }
     public function OpenMarketBuy(string $pair, string $amount): ?Order
     {
