@@ -183,7 +183,7 @@ class BrokerRepository
                 throw new \Exception("Unknown order type: " . $orderType);
         }
     }
-    private function ExceptionHandler(\Throwable|object $e, ErrorType $errorType, string $comesFrom, ListMy $listMy): void
+    private function ExceptionHandler(\Throwable $e, ErrorType $errorType, string $comesFrom, ListMy $listMy): void
     {
         $errorMessage = "Can't parse error msg";
         try
