@@ -45,9 +45,30 @@ class BrokerRepository
     {
         try
         {
-            $result = $this->binance->market()->getTickerPrice([
-                'symbol' => $pair,
-            ]);
+            switch ($this->brokerSettings->getTradeType())
+            {
+                case TradeType::SPOT:
+                    $result = $this->binance->system()->getTickerPrice([
+                        'symbol' => $pair,
+                    ]);
+                    break;
+                case TradeType::FUTURES:
+                    $result = $this->binance->market()->getTickerPrice([
+                        'symbol' => $pair,
+                    ]);
+                    break;
+                case TradeType::MARGIN:
+                    $result = $this->binance->system()->getTickerPrice([
+                        'symbol' => $pair,
+                    ]);
+                    break;
+                default:
+                    $result = $this->binance->system()->getTickerPrice([
+                        'symbol' => $pair,
+                    ]);
+                    break;
+            }
+
             if (isset($result['price']))
                 return $result['price'];
 
