@@ -48,15 +48,11 @@ class Error
     }
 
     /**
-     * Set the value of file
-     *
-     * @return  self
+     * Get the value of file
      */
-    public function setFile($file)
+    public function getFile($file)
     {
-        $this->file = $file;
-
-        return $this;
+        return $this->file;
     }
 
     /**
