@@ -26,7 +26,7 @@ class Error
     /**
      * Get the value of msg
      */
-    public function getMsg()
+    public function GetMsg()
     {
         return $this->msg;
     }
@@ -34,7 +34,7 @@ class Error
     /**
      * Get the value of errorType
      */
-    public function getErrorType()
+    public function GetErrorType()
     {
         return $this->errorType;
     }
@@ -42,7 +42,7 @@ class Error
     /**
      * Get the value of comesFrom
      */
-    public function getComesFrom()
+    public function GetComesFrom()
     {
         return $this->comesFrom;
     }
@@ -50,7 +50,7 @@ class Error
     /**
      * Get the value of file
      */
-    public function getFile($file)
+    public function GetFile($file)
     {
         return $this->file;
     }
@@ -58,7 +58,7 @@ class Error
     /**
      * Get the value of line
      */
-    public function getLine()
+    public function GetLine()
     {
         return $this->line;
     }
@@ -66,7 +66,7 @@ class Error
     /**
      * Get the value of timestamp
      */
-    public function getTimestamp()
+    public function GetTimestamp()
     {
         return $this->timestamp;
     }
