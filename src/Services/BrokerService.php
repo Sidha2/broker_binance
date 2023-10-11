@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace BrokerBinance\Services;
 
 use BrokerBinance\Enums\BuySellType;
+use BrokerBinance\Models\LimitOrder;
 use BrokerBinance\Repositories\BrokerRepository;
 use BrokerBinance\Interface\IBrokerService;
 use BrokerBinance\Models\Error;
@@ -31,7 +32,7 @@ class BrokerService implements IBrokerService
     {
         return $this->brokerRepository->OpenMarket(buySellType::SELL, $pair, $amount, $this->listMy);
     }
-    public function OpenLimitBuy(string $pair, string $amount, string $price): ?Order
+    public function OpenLimitBuy(string $pair, string $amount, string $price): ?LimitOrder
     {
         return $this->brokerRepository->OpenLimit(BuySellType::BUY, $pair, $amount, $price, $this->listMy);
     }
@@ -39,7 +40,7 @@ class BrokerService implements IBrokerService
     {
         return $this->brokerRepository->CloseLimit(BuySellType::BUY, $pair, $orderId, $this->listMy);
     }
-    public function OpenLimitSell(string $pair, string $amount, string $price): ?Order
+    public function OpenLimitSell(string $pair, string $amount, string $price): ?LimitOrder
     {
         return $this->brokerRepository->OpenLimit(BuySellType::SELL, $pair, $amount, $price, $this->listMy);
     }
