@@ -24,11 +24,11 @@ class BrokerService implements IBrokerService
     {
         return $this->brokerRepository->GetTicker($pair, $this->listMy);
     }
-    public function OpenMarketBuy(string $pair, string $amount): ?Order
+    public function OpenMarketBuy(string $pair, string $amount): ?LimitOrder
     {
         return $this->brokerRepository->OpenMarket(BuySellType::BUY, $pair, $amount, $this->listMy);
     }
-    public function OpenMarketSell(string $pair, string $amount): ?Order
+    public function OpenMarketSell(string $pair, string $amount): ?LimitOrder
     {
         return $this->brokerRepository->OpenMarket(buySellType::SELL, $pair, $amount, $this->listMy);
     }
@@ -36,17 +36,13 @@ class BrokerService implements IBrokerService
     {
         return $this->brokerRepository->OpenLimit(BuySellType::BUY, $pair, $amount, $price, $this->listMy);
     }
-    public function CloseLimitBuy(string $pair, string $orderId): ?Order
-    {
-        return $this->brokerRepository->CloseLimit(BuySellType::BUY, $pair, $orderId, $this->listMy);
-    }
     public function OpenLimitSell(string $pair, string $amount, string $price): ?LimitOrder
     {
         return $this->brokerRepository->OpenLimit(BuySellType::SELL, $pair, $amount, $price, $this->listMy);
     }
-    public function CloseLimitSell(string $pair, string $orderId): ?Order
+    public function CloseLimit(LimitOrder $limitOrder): ?LimitOrder
     {
-        return $this->brokerRepository->CloseLimit(BuySellType::SELL, $pair, $orderId, $this->listMy);
+        return $this->brokerRepository->CloseLimit($limitOrder, $this->listMy);
     }
 
     /**

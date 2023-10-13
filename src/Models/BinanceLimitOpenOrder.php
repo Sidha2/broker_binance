@@ -2,10 +2,7 @@
 declare(strict_types=1);
 namespace BrokerBinance\Models;
 
-use BrokerBinance\Enums\BuySellType;
-use BrokerBinance\Enums\PositionSide;
-
-class BinanceLimitOrder
+class BinanceLimitOpenOrder
 {
     public int $orderId;
     public string $symbol;

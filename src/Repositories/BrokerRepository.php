@@ -2,7 +2,9 @@
 declare(strict_types=1);
 namespace BrokerBinance\Repositories;
 
-use BrokerBinance\Models\BinanceLimitOrder;
+use BrokerBinance\Enums\LimitOrderStatus;
+use BrokerBinance\Models\BinanceLimitCloseOrder;
+use BrokerBinance\Models\BinanceLimitOpenOrder;
 use BrokerBinance\Models\BinanceOrder;
 use BrokerBinance\Models\Error;
 use BrokerBinance\Models\LimitOrder;
@@ -89,21 +91,22 @@ class BrokerRepository
         }
     }
 
-    public function OpenMarket(BuySellType $buySellType, string $pair, string $amount, ListMy $listMy): ?Order
+    public function OpenMarket(BuySellType $buySellType, string $pair, string $amount, ListMy $listMy): ?LimitOrder
     {
         try
         {
-            $result = $this->binance->trade()->postOrder([
+            $inputParams = [
                 'symbol'   => $pair,
                 'side'     => $buySellType === BuySellType::BUY ? 'BUY' : 'SELL',
                 'type'     => OrderType::MARKET->name,
-                'quantity' => $amount,
-            ]);
-            return $this->MapResultToOrder((new JsonMapper())->map($result, BinanceOrder::class));
+                'quantity' => $amount
+            ];
+            $result = $this->binance->trade()->postOrder($inputParams);
+            return $this->MapResultToLimitOpenOrder((new JsonMapper())->map((object)$result, BinanceLimitOpenOrder::class), $inputParams);
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, "OpenMarketBuy", $listMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, $buySellType === BuySellType::BUY ? "OpenMarket - Buy" : "OpenMarket - Sell", $listMy);
             return null;
         }
     }
@@ -121,7 +124,7 @@ class BrokerRepository
                 'timeInForce' => 'GTC',
             ];
             $result = $this->binance->trade()->postOrder($inputParams);
-            return $this->MapResultToLimitOrder((new JsonMapper())->map((object)$result, BinanceLimitOrder::class), $inputParams);
+            return $this->MapResultToLimitOpenOrder((new JsonMapper())->map((object)$result, BinanceLimitOpenOrder::class), $inputParams);
         }
         catch (\Exception $e)
         {
@@ -130,24 +133,24 @@ class BrokerRepository
         }
     }
 
-    public function CloseLimit(BuySellType $buySellType, string $pair, string $orderId, ListMy $listMy)
+    public function CloseLimit(LimitOrder $limitOrder, ListMy $listMy): ?LimitOrder
     {
         try
         {
             $result = $this->binance->trade()->deleteOrder([
-                'symbol'  => $pair,
-                'orderId' => $orderId,
+                'symbol'  => $limitOrder->symbol,
+                'orderId' => $limitOrder->orderId,
             ]);
-            return $this->MapResultToOrder((new JsonMapper())->map((object)$result, BinanceOrder::class));
+            return $this->MapResultToLimitCloseOrder((new JsonMapper())->map((object)$result, BinanceLimitCloseOrder::class), []);
         }
         catch (\Exception $e)
         {
-            $this->ExceptionHandler($e, ErrorType::Exchange, $buySellType === BuySellType::BUY ? "CloseLimit - Buy" : "CloseLimit - Sell", $listMy);
+            $this->ExceptionHandler($e, ErrorType::Exchange, "CloseLimit", $listMy);
             return null;
         }
     }
 
-    private function MapResultToOrder(BinanceOrder $result): ?Order
+    private function MapResultToOrder(BinanceLimitOpenOrder $result): ?Order
     {
         if (is_null($result))
             return null;
@@ -168,19 +171,36 @@ class BrokerRepository
         return $order;
     }
 
-    private function MapResultToLimitOrder(BinanceLimitOrder $result, array $inputParams): ?LimitOrder
+    private function MapResultToLimitOpenOrder(BinanceLimitOpenOrder $result, array $inputParams): ?LimitOrder
     {
         if (is_null($result))
             return null;
 
         $order = new LimitOrder();
         $order->orderId = intval($result->orderId);
-        $order->price = $inputParams['price'];
+        $order->price = $inputParams['price'] ?? '0';
         $order->quantity = $inputParams['quantity'];
         $order->positionSide = $inputParams['side'] == "BUY" ? "LONG" : "SHORT";
         $order->symbol = $result->symbol;
         $order->time = $result->transactTime;
         $order->clientOrderId = $result->clientOrderId;
+        return $order;
+    }
+
+    private function MapResultToLimitCloseOrder(BinanceLimitCloseOrder $result): ?LimitOrder
+    {
+        if (is_null($result))
+            return null;
+
+        $order = new LimitOrder();
+        $order->orderId = intval($result->orderId);
+        $order->price = $result->price;
+        $order->quantity = $result->executedQty;
+        $order->positionSide = $result->side == "BUY" ? "LONG" : "SHORT";
+        $order->symbol = $result->symbol;
+        $order->time = $result->transactTime;
+        $order->clientOrderId = $result->clientOrderId;
+        $order->status = $result->status;
 
         return $order;
     }
