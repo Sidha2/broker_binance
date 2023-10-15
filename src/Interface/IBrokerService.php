@@ -15,7 +15,7 @@ interface IBrokerService
     public function OpenLimitSell(string $pair, string $amount, string $price): ?LimitOrder;
     public function CloseLimit(LimitOrder $limitOrder): ?LimitOrder;
     public function GetOrder(LimitOrder $limitOrder): ?Order;
-    public function GetBalance(): ?LimitOrder;
+    // public function GetBalance(): ?LimitOrder;
     public function GetErrorList(): ListMy;
 
 }
