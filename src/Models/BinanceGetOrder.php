@@ -2,27 +2,26 @@
 declare(strict_types=1);
 namespace BrokerBinance\Models;
 
-class BinanceOrder
+class BinanceGetOrder
 {
-    public string $orderId;
     public string $symbol;
-    public string $status;
+    public string $orderId;
+    public string $orderListId;
     public string $clientOrderId;
     public string $price;
-    public string $avgPrice;
     public string $origQty;
     public string $executedQty;
-    public string $cumQuote;
+    public string $cummulativeQuoteQty;
+    public string $status;
     public string $timeInForce;
     public string $type;
-    public string $reduceOnly;
-    public string $closePosition;
     public string $side;
-    public string $positionSide;
     public string $stopPrice;
-    public string $workingType;
-    public string $priceProtect;
-    public string $origType;
+    public string $icebergQty;
     public string $time;
     public string $updateTime;
+    public string $isWorking;
+    public string $workingTime;
+    public string $origQuoteOrderQty;
+    public string $selfTradePreventionMode;
 }

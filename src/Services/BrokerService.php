@@ -44,6 +44,10 @@ class BrokerService implements IBrokerService
     {
         return $this->brokerRepository->CloseLimit($limitOrder, $this->listMy);
     }
+    public function GetOrder(LimitOrder $limitOrder): ?Order
+    {
+        return $this->brokerRepository->GetOrder($limitOrder, $this->listMy);
+    }
 
     /**
      * Get the value of ListMy

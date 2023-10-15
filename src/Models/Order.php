@@ -15,7 +15,7 @@ class Order
     public string $executedQty;
     public string $cumQuote;
     public OrderType $orderType;
-    public PositionSide $positionSide;
+    public ?PositionSide $positionSide;
     public BuySellType $openCloseType;
     public string $targetPrice;
     public string $time;

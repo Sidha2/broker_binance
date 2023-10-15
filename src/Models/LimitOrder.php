@@ -16,6 +16,7 @@ class LimitOrder
     public string $time;
     public string $updateTime;
     public string $status;
+    public string $clientOrderId;
 
     public function __construct()
     {

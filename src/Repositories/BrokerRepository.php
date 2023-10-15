@@ -2,10 +2,9 @@
 declare(strict_types=1);
 namespace BrokerBinance\Repositories;
 
-use BrokerBinance\Enums\LimitOrderStatus;
+use BrokerBinance\Models\BinanceGetOrder;
 use BrokerBinance\Models\BinanceLimitCloseOrder;
 use BrokerBinance\Models\BinanceLimitOpenOrder;
-use BrokerBinance\Models\BinanceOrder;
 use BrokerBinance\Models\Error;
 use BrokerBinance\Models\LimitOrder;
 use BrokerBinance\Models\ListMy;
@@ -141,7 +140,7 @@ class BrokerRepository
                 'symbol'  => $limitOrder->symbol,
                 'orderId' => $limitOrder->orderId,
             ]);
-            return $this->MapResultToLimitCloseOrder((new JsonMapper())->map((object)$result, BinanceLimitCloseOrder::class), []);
+            return $this->MapResultToLimitCloseOrder((new JsonMapper())->map((object)$result, BinanceLimitCloseOrder::class));
         }
         catch (\Exception $e)
         {
@@ -150,18 +149,36 @@ class BrokerRepository
         }
     }
 
-    private function MapResultToOrder(BinanceLimitOpenOrder $result): ?Order
+    public function GetOrder(LimitOrder $limitOrder, ListMy $listMy): ?Order
+    {
+        try
+        {
+            $result = $this->binance->user()->getOrder([
+                'symbol'  => $limitOrder->symbol,
+                'orderId' => $limitOrder->orderId,
+                // 'origClientOrderId' => $limitOrder->clientOrderId,
+            ]);
+            return $this->MapResultToOrder((new JsonMapper())->map((object)$result, BinanceGetOrder::class));
+        }
+        catch (\Exception $e)
+        {
+            $this->ExceptionHandler($e, ErrorType::Exchange, "GetOrder", $listMy);
+            return null;
+        }
+    }
+
+    private function MapResultToOrder(BinanceGetOrder $result): ?Order
     {
         if (is_null($result))
             return null;
 
         $order = new Order();
         $order->orderId = intval($result->orderId);
-        $order->avgPrice = $result->avgPrice;
-        $order->cumQuote = $result->cumQuote;
+        $order->avgPrice = $result->price == 0 ? strval(round($result->cummulativeQuoteQty / $result->origQty, 8)) : $result->price;
+        $order->cumQuote = $result->cummulativeQuoteQty;
         $order->executedQty = $result->executedQty;
         $order->openCloseType = $this->MapBuySellType($result->side);
-        $order->positionSide = $this->MapPositionSide($result->positionSide);
+        $order->positionSide = null;
         $order->orderType = $this->MapOrderType($result->type);
         $order->origQty = $result->origQty;
         $order->symbol = $result->symbol;
