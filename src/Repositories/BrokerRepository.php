@@ -183,6 +183,18 @@ class BrokerRepository
         }
     }
 
+    public function IsOrderFilled(LimitOrder $limitOrder, ListMy $listMy): ?bool
+    {
+        $order = $this->GetOrder($limitOrder, $listMy);
+        if (!isset($order->status))
+            return null;
+
+        if ($order->status === 'FILLED')
+            return true;
+
+        return false;
+    }
+
     private function MapResultToOrder(BinanceGetOrder $result): ?Order
     {
         if (is_null($result))
@@ -199,6 +211,7 @@ class BrokerRepository
         $order->symbol = $result->symbol;
         $order->targetPrice = $result->stopPrice;
         $order->time = $result->time;
+        $order->status = $result->status;
 
         return $order;
     }

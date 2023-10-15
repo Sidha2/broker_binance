@@ -18,4 +18,5 @@ class Order
     public string $targetPrice;
     public string $time;
     public string $updateTime;
+    public string $status;
 }
