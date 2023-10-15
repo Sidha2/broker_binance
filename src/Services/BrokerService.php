@@ -48,6 +48,10 @@ class BrokerService implements IBrokerService
     {
         return $this->brokerRepository->GetOrder($limitOrder, $this->listMy);
     }
+    // public function GetBalance(): ?LimitOrder
+    // {
+    //     return $this->brokerRepository->GetBalance($this->listMy);
+    // }
 
     /**
      * Get the value of ListMy
