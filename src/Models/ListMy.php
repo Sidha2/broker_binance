@@ -43,6 +43,16 @@ class ListMy
 
         return null;
     }
+    public function Remove(int $index)
+    {
+        if (isset($this->items[$index]))
+        {
+            array_splice($this->items, $index, 1);
+            return true;
+        }
+
+        return false;
+    }
 
     public function Count()
     {
