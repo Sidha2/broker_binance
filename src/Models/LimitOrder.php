@@ -4,7 +4,6 @@ namespace BrokerBinance\Models;
 
 use BrokerBinance\Enums\BuySellType;
 use BrokerBinance\Enums\LimitOrderStatus;
-use BrokerBinance\Enums\PositionSide;
 
 class LimitOrder
 {

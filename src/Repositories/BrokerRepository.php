@@ -12,7 +12,6 @@ use BrokerBinance\Enums\ErrorType;
 use BrokerBinance\Enums\BuySellType;
 use BrokerBinance\Enums\OrderType;
 use BrokerBinance\Models\Order;
-use BrokerBinance\Enums\PositionSide;
 use BrokerBinance\Enums\TradeType;
 use BrokerBinance\Models\BrokerSettings;
 use JsonMapper;
@@ -149,6 +148,23 @@ class BrokerRepository
         }
     }
 
+    // TODO user()-> don't have get balance wtf
+    // public function GetBalance(ListMy $listMy): ?LimitOrder
+    // {
+    //     try
+    //     {
+    //         $result = $this->binance->user()->getBalance();
+    //         print_r($result);
+    //         die();
+    //         // return $this->MapResultToLimitCloseOrder((new JsonMapper())->map((object)$result, BinanceLimitCloseOrder::class));
+    //     }
+    //     catch (\Exception $e)
+    //     {
+    //         $this->ExceptionHandler($e, ErrorType::Exchange, "CloseLimit", $listMy);
+    //         return null;
+    //     }
+    // }
+
     public function GetOrder(LimitOrder $limitOrder, ListMy $listMy): ?Order
     {
         try
@@ -178,7 +194,6 @@ class BrokerRepository
         $order->cumQuote = $result->cummulativeQuoteQty;
         $order->executedQty = $result->executedQty;
         $order->openCloseType = $this->MapBuySellType($result->side);
-        $order->positionSide = null;
         $order->orderType = $this->MapOrderType($result->type);
         $order->origQty = $result->origQty;
         $order->symbol = $result->symbol;
@@ -197,7 +212,7 @@ class BrokerRepository
         $order->orderId = intval($result->orderId);
         $order->price = $inputParams['price'] ?? '0';
         $order->quantity = $inputParams['quantity'];
-        $order->positionSide = $inputParams['side'] == "BUY" ? "LONG" : "SHORT";
+        $order->positionSide = $inputParams['side'];
         $order->symbol = $result->symbol;
         $order->time = $result->transactTime;
         $order->clientOrderId = $result->clientOrderId;
@@ -213,7 +228,7 @@ class BrokerRepository
         $order->orderId = intval($result->orderId);
         $order->price = $result->price;
         $order->quantity = $result->executedQty;
-        $order->positionSide = $result->side == "BUY" ? "LONG" : "SHORT";
+        $order->positionSide = $result->side;
         $order->symbol = $result->symbol;
         $order->time = $result->transactTime;
         $order->clientOrderId = $result->clientOrderId;
@@ -233,20 +248,6 @@ class BrokerRepository
 
             default:
                 throw new \Exception("Unknown open/close type: " . $buySellType);
-        }
-    }
-
-    private function MapPositionSide(string $positionSide): PositionSide
-    {
-        switch ($positionSide)
-        {
-            case 'LONG':
-                return PositionSide::LONG;
-            case 'SHORT':
-                return PositionSide::SHORT;
-
-            default:
-                throw new \Exception("Unknown position side type: " . $positionSide);
         }
     }
 
