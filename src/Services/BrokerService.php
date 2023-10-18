@@ -48,7 +48,13 @@ class BrokerService implements IBrokerService
     {
         return $this->brokerRepository->GetOrder($limitOrder, $this->listMy);
     }
-    public function IsOrderFilled(LimitOrder $limitOrder): ?bool
+    /**
+     * Summary of IsOrderFilled
+     * @param \BrokerBinance\Models\LimitOrder $limitOrder
+     * @return null|bool|\BrokerBinance\Models\Order
+     * If Return Order, than order is Filled
+     */
+    public function IsOrderFilled(LimitOrder $limitOrder): null|bool|Order
     {
         return $this->brokerRepository->IsOrderFilled($limitOrder, $this->listMy);
     }

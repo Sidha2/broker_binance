@@ -183,14 +183,21 @@ class BrokerRepository
         }
     }
 
-    public function IsOrderFilled(LimitOrder $limitOrder, ListMy $listMy): ?bool
+    /**
+     * Summary of IsOrderFilled
+     * @param \BrokerBinance\Models\LimitOrder $limitOrder
+     * @param \BrokerBinance\Models\ListMy $listMy
+     * @return null|bool|\BrokerBinance\Models\Order
+     * If Return Order, than order is Filled
+     */
+    public function IsOrderFilled(LimitOrder $limitOrder, ListMy $listMy): null|bool|Order
     {
         $order = $this->GetOrder($limitOrder, $listMy);
         if (!isset($order->status))
             return null;
 
         if ($order->status === 'FILLED')
-            return true;
+            return $order;
 
         return false;
     }
