@@ -10,6 +10,7 @@ class LimitOrder
     public int $orderId;
     public string $symbol;
     public string $price;
+    public string $realizedPrice;
     public string $quantity;
     public BuySellType $openCloseType;
     public string $time;
