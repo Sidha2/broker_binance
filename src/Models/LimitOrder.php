@@ -12,11 +12,11 @@ class LimitOrder
     public string $price;
     public string $realizedPrice;
     public string $quantity;
-    public BuySellType $openCloseType;
     public string $time;
     public string $updateTime;
     public string $status;
     public string $clientOrderId;
+    public string $positionSide;
 
     public function __construct()
     {
