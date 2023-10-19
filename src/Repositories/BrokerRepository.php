@@ -212,7 +212,7 @@ class BrokerRepository
         $order->avgPrice = $result->price == 0 ? strval(round($result->cummulativeQuoteQty / $result->origQty, 8)) : $result->price;
         $order->cumQuote = $result->cummulativeQuoteQty;
         $order->executedQty = $result->executedQty;
-        $order->openCloseType = $this->MapBuySellType($result->side);
+        $order->buySellType = $this->MapBuySellType($result->side);
         $order->orderType = $this->MapOrderType($result->type);
         $order->origQty = $result->origQty;
         $order->symbol = $result->symbol;
