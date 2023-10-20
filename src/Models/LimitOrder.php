@@ -4,6 +4,7 @@ namespace BrokerBinance\Models;
 
 use BrokerBinance\Enums\BuySellType;
 use BrokerBinance\Enums\LimitOrderStatus;
+use BrokerBinance\Enums\OrderType;
 
 class LimitOrder
 {
@@ -17,9 +18,11 @@ class LimitOrder
     public string $status;
     public string $clientOrderId;
     public string $positionSide;
+    public string $type;
 
     public function __construct()
     {
         $this->status = LimitOrderStatus::NEW ->name;
+        $this->type = OrderType::LIMIT->name;
     }
 }
