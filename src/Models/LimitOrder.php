@@ -24,5 +24,7 @@ class LimitOrder
     {
         $this->status = LimitOrderStatus::NEW ->name;
         $this->type = OrderType::LIMIT->name;
+        $this->realizedPrice = "0";
+        $this->updateTime = "0";
     }
 }
